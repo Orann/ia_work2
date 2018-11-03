@@ -9,9 +9,11 @@ import java.util.ArrayList;
 public class Sudoku {
 
     private ArrayList<ArrayList<Cell>> grid;
+    private int NbCellsToComplete;
 
     public Sudoku(String sudoku) {
         grid = new ArrayList<>();
+        NbCellsToComplete = 0;
         ArrayList<Cell> ligne = new ArrayList<>();
         ArrayList<Integer> domain = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
@@ -21,6 +23,7 @@ public class Sudoku {
         for (char number : sudoku.toCharArray()) {
             if (number == '0') {
                 ligne.add(new Cell(Character.getNumericValue(number), (ArrayList<Integer>) domain.clone()));
+                NbCellsToComplete++;
             } else {
                 ligne.add(new Cell(Character.getNumericValue(number), null));
             }
@@ -73,9 +76,46 @@ public class Sudoku {
         }
     }
     
+    //Test de la fonction objectif
+    public boolean isAssignementsComplete(ArrayList<Cell> assignments){
+        boolean goal = false;
+        if(assignments.size() == NbCellsToComplete){
+            goal = true;
+        }
+        return goal;
+    }   
+    
+    // On récupère une cellule non assigné 
+    public Cell selectUnassignedCell(ArrayList<Cell> assignements){
+        boolean foundCell = false;
+        int i = 0;
+        int j= 0;
+        Cell cell = null;
+        while(!foundCell){
+            if(!grid.get(i).get(j).isAssigned()){
+                cell = grid.get(i).get(j);
+                foundCell = true;
+            }
+            if ( j==8 ){
+                i++;
+                j=0;
+            }
+            else{
+                j++;
+            }
+        }
+        return cell;
+    }
 
     @Override
     public String toString() {
-        return "Sudoku{" + "grid=" + grid + '}';
+        String res = "";
+        for (int i=0; i<9; i++){
+            for (int j=0; j<9; j++){
+                res += grid.get(i).get(j).getAssignment();
+            }
+            res += "\n";
+        }
+        return res;
     }
 }
