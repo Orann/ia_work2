@@ -10,12 +10,15 @@ import java.util.Comparator;
  */
 public class Sudoku {
 
+    //Attributes
     private ArrayList<ArrayList<Cell>> grid;
     private int NbCellsToComplete;
 
     private ArrayList<Cell> mrvListSelection;
     private ArrayList<Cell> degreeHeuristicListSelection;
 
+    
+    //Constructor
     public Sudoku(String sudoku) {
         grid = new ArrayList<>();
         NbCellsToComplete = 0;
@@ -58,11 +61,10 @@ public class Sudoku {
     }
 
     private void fillConstraints() {
-        for (int i = 0; i < 9; i++) { //ligne
-            for (int j = 0; j < 9; j++) { //colonne
+        for (int i = 0; i < 9; i++) { //row
+            for (int j = 0; j < 9; j++) { //column
                 Cell currentCell = grid.get(i).get(j);
-                //On ajoute la contrainte entre currentCell et les cellules de 
-                //la même ligne et de la même colonne
+                //We add the constraints between currentCell and the cells of the same row and the same column
                 for (int k = 0; k < 9; k++) { //ligne
                     for (int l = 0; l < 9; l++) { //colonne
                         if (((i == k) && (j != l)) || (i != k && j == l)) {
@@ -70,8 +72,7 @@ public class Sudoku {
                         }
                     }
                 }
-                //On ajoute les contraintes entre currentCell et les cellules du
-                //même carré de 3
+                //We add the constraints between currentCell and the cells of the same 3x3 square
                 for (int m = (i / 3) * 3; m < ((i / 3) * 3) + 3; m++) {
                     for (int n = (j / 3) * 3; n < ((j / 3) * 3) + 3; n++) {
                         if (m != i && n != j) {
@@ -84,7 +85,7 @@ public class Sudoku {
         }
     }
 
-    //Test de la fonction objectif
+    //Tests the objective function
     public boolean isAssignementsComplete(ArrayList<Cell> assignments) {
         boolean goal = false;
         if (assignments.size() == NbCellsToComplete) {
@@ -93,7 +94,7 @@ public class Sudoku {
         return goal;
     }
 
-    // On récupère une cellule non assigné 
+    // Returns the first unassigned cell -> not the optimized method to choose an unassigned cell
     public Cell selectUnassignedCell() {
         boolean foundCell = false;
         int i = 0;
@@ -114,6 +115,7 @@ public class Sudoku {
         return cell;
     }
 
+    //Selects an unassigned cell using the Most Restraining Value algorithm
     public ArrayList<Cell> mrvSelection() {
         mrvListSelection.clear();
 
@@ -154,6 +156,7 @@ public class Sudoku {
         return bestMrvVariables;
     }
 
+    // Selects an unassigned cell using the degree heuristic selection algorithm
     public Cell degreeHeuristicSelection(ArrayList<Cell> mrvResult) {
         degreeHeuristicListSelection.clear();
         int counter = 0;

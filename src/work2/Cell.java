@@ -11,12 +11,15 @@ import java.util.HashMap;
  */
 class Cell {
 
+    //Attributes
     private ArrayList<Cell> constraints;
     private int assignment;
     private boolean isAssigned;
     private ArrayList<Integer> domain;
     private int comparisonCriteria; 
 
+    
+    //Constructor
     public Cell(int assignment, ArrayList<Integer> domain) {
         this.constraints = new ArrayList<>();
         this.assignment = assignment;
@@ -29,6 +32,8 @@ class Cell {
         this.comparisonCriteria = -1; 
     }
 
+    //Getters and Setters 
+    
     public int getComparisonCriteria() {
         return comparisonCriteria;
     }
@@ -49,10 +54,12 @@ class Cell {
         return constraints;
     }
 
+    //Tests if a cell already has a value assigned
     public boolean isAssigned() {
         return isAssigned;
     }
 
+    //Tests if the cell is consistant (if it respects all of its constraints)
     boolean isConsistant(int value) {
         boolean isConsistant = true;
         for (Cell cell : constraints) {
@@ -67,13 +74,15 @@ class Cell {
         constraints.add(constraint);
     }
 
+    //Propagation of constraints and detection of errors with AC3 to reduce the execution time of the programm
     boolean propagateConstraints(int value) {
         boolean isArcConsistant = true; 
         for (Cell cell : constraints) {
             ArrayList<Integer> domain = cell.getDomain();
             if (!cell.isAssigned()) {
                 domain.remove((Object) value);
-                if (domain.isEmpty()){ // AC3
+                // AC3
+                if (domain.isEmpty()){ 
                     isArcConsistant = false;
                 }
             }
@@ -81,6 +90,7 @@ class Cell {
         return isArcConsistant;
     }
 
+    //Assigns a value to a cell
     public boolean assign(int value) {
         this.assignment = value;
         this.isAssigned = true;
@@ -88,20 +98,19 @@ class Cell {
         return isArcConsistant;
     }
 
+    //Unassigns the value to a cell -> Used during back propagation
     public void unassign(int value) {
         this.assignment = 0;
         this.isAssigned = false;
-        ArrayList<Cell> subConstraints; //Les contraintes de la contrainte considérée
+        ArrayList<Cell> subConstraints; //The constraints of the contraint considered
         int i = 0;
         boolean addValue = true;
 
         for (Cell cell : constraints) {
-            ArrayList<Integer> domain = cell.getDomain(); // le domaine qu'on va modifier (ou pas)
+            ArrayList<Integer> domain = cell.getDomain(); // The domain we're considering to modify
             if (!cell.isAssigned()) {
                 subConstraints = cell.getConstraints();
                 while (addValue && i < subConstraints.size()) {
-                    //Si la contrainte a un "voisin" qui est assigné à value, 
-                    //ce n'est pas la peine de remettre value dans son domaine
                     if (subConstraints.get(i).getAssignment() == value) {
                         addValue = false;
                     }
@@ -123,6 +132,7 @@ class Cell {
         return "" + assignment;
     }
 
+    // LCV algorithm : returns the possible values (the domain) classified from the least constraining to  the most constraining
     public ArrayList<Integer> leastConstrainingValues() {
         int counter=0;
         ArrayList<Integer> tmp = new ArrayList<>();

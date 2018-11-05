@@ -29,6 +29,7 @@ public class Main {
         }
         String[] sudokus = sudokusFile.split(System.getProperty("line.separator"));
         
+        //Display the sudokus in the terminal
         for(String sudokuString : sudokus){
             sudoku = new Sudoku(sudokuString);
             System.out.println("Empty sudoku :");
@@ -40,6 +41,7 @@ public class Main {
         }        
     }
 
+    //Backtracking algorithm
     private static ArrayList<Cell> backtrackingSearch(ArrayList<Cell> assignements) {
         Cell cell;
         ArrayList<Cell> results = null;
